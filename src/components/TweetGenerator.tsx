@@ -45,7 +45,7 @@ export default function TweetGenerator() {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-8">
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-center mb-6">Tweet Generator</h2>
+        <h2 className="text-2xl text-blue-700 font-bold text-3xl text-center mb-6">Tweet Generator</h2>
         
         <div className="space-y-4">
           <div>
@@ -70,7 +70,7 @@ export default function TweetGenerator() {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="text-gray-700 py-3 px-4 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
@@ -83,7 +83,7 @@ export default function TweetGenerator() {
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
-                className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                className="text-gray-700 py-3 px-4 block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function TweetGenerator() {
               value={formData.text}
               onChange={handleInputChange}
               rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="text-gray-700 py-3 px-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -103,12 +103,12 @@ export default function TweetGenerator() {
 
       {/* Tweet Preview */}
       <div className="bg-white rounded-lg shadow p-4">
-        <h3 className="text-lg font-semibold mb-4">Preview</h3>
+        <h3 className="text-blue-600 text-lg font-semibold mb-4">Preview</h3>
         <div className="border rounded-xl p-4">
           <div className="flex items-start space-x-4">
             {previewImage && (
               <div className="flex-shrink-0">
-                <div className="h-12 w-12 rounded-full overflow-hidden">
+                <div className="h-13 w-13 rounded-full overflow-hidden">
                   <Image
                     src={previewImage}
                     alt="Profile"
@@ -121,8 +121,7 @@ export default function TweetGenerator() {
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="font-bold">{formData.name || 'Name'}</span>
-                <span className="text-gray-500">@{formData.username || 'username'}</span>
+                <span className="text-gray-900 text-xl font-bold">{formData.name || 'Name'}</span>
                 <Image 
                   src="/verified.svg" 
                   alt="Verified" 
@@ -130,7 +129,10 @@ export default function TweetGenerator() {
                   height={16} 
                   className="inline-block"
                 />
-              </div>
+              </div>  
+              <span className="text-lg text-gray-600">@{formData.username || 'username'}</span>
+                
+              
               <p className="text-gray-900 mt-1">{formData.text || 'Your tweet text will appear here'}</p>
             </div>
           </div>
