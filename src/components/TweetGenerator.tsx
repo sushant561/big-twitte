@@ -133,7 +133,7 @@ export default function TweetGenerator() {
               <span className="text-lg text-gray-600">@{formData.username || 'username'}</span>
                 
               
-              <p className="text-gray-900 mt-1">{formData.text || 'Your tweet text will appear here'}</p>
+              <p className="-ml-17 text-xl text-gray-900 mt-5">{formData.text || 'Your tweet text will appear here'}</p>
             </div>
           </div>
         </div>
