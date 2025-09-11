@@ -1,0 +1,231 @@
+'use client';
+import { useState, useEffect, ChangeEvent } from 'react';
+import Image from 'next/image';
+import { useTheme } from 'next-themes';
+
+interface TweetFormData {
+  name: string;
+  username: string;
+  text: string;
+  photo: string | null;
+  verifiedBadge: string;
+}
+
+export default function TweetGenerator() {
+  const verificationOptions = [
+    { value: '', label: 'No Badge', icon: '' },
+    { value: 'blue-tick', label: 'Blue Tick', icon: '/blue-tick.svg' },
+    { value: 'pink-tick', label: 'Pink Tick', icon: '/pink-tick.svg' },
+    { value: 'golden-tick', label: 'Golden Tick', icon: '/golden-tick.svg' },
+    { value: 'curly-tick', label: 'Border Tick', icon: '/curly-tick.svg' },
+    { value: 'empty-tick', label: 'Gray Tick', icon: '/empty-tick.svg' },
+  ];
+
+  const [formData, setFormData] = useState<TweetFormData>({
+    name: '',
+    username: '',
+    text: '',
+    photo: null,
+    verifiedBadge: ''
+  });
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setPreviewImage(base64String);
+        setFormData(prev => ({
+          ...prev,
+          photo: base64String
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <>
+      {/* Theme Toggle Button - Fixed position outside */}
+      <div className="fixed top-6 right-6 z-50">
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <svg className="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-200">
+        <div className="max-w-2xl mx-auto px-4 space-y-8">
+          {/* Form Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-4">
+            <h2 className="text-2xl text-blue-700 dark:text-blue-400 font-bold text-3xl text-center mb-6">
+              Tweet Generator
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Profile Photo</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300
+                    hover:file:bg-blue-100 dark:hover:file:bg-blue-800
+                    transition-colors duration-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="text-gray-700 dark:text-gray-200 py-3 px-4 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                <div className="mt-1 flex rounded-md shadow-sm">
+                  <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-3 text-gray-500 dark:text-gray-400 transition-colors duration-200">@</span>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    className="text-gray-700 dark:text-gray-200 py-3 px-4 block w-full flex-1 rounded-none rounded-r-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+                    placeholder="username"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tweet Text</label>
+                <textarea
+                  name="text"
+                  value={formData.text}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="text-gray-700 dark:text-gray-200 py-3 px-4 mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-200"
+                  placeholder="What's happening?"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Verification Badge</label>
+                <div className="mt-1 grid grid-cols-6 gap-2">
+                  {verificationOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, verifiedBadge: option.value }))}
+                      className={`p-2 rounded-lg border ${
+                        formData.verifiedBadge === option.value 
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-400' 
+                          : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                      } flex items-center justify-center h-12 transition-colors duration-200`}
+                      title={option.label}
+                    >
+                      {option.icon ? (
+                        <Image
+                          src={option.icon}
+                          alt={option.label}
+                          width={24}
+                          height={24}
+                          className="inline-block"
+                        />
+                      ) : (
+                        <span className="text-gray-400 dark:text-gray-500">✕</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Preview Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 transition-colors duration-200">
+            <h3 className="text-blue-600 dark:text-blue-400 text-lg font-semibold mb-4">Preview</h3>
+            <div className="border dark:border-gray-700 rounded-xl p-4">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="h-13 w-13 rounded-full overflow-hidden">
+                    <Image
+                      src={previewImage || '/default-profile.svg'}
+                      alt="Profile"
+                      width={48}
+                      height={48}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-900 dark:text-white text-xl font-bold transition-colors duration-200">
+                      {formData.name || 'Name'}
+                    </span>
+                    {formData.verifiedBadge && (
+                      <Image 
+                        src={`/${formData.verifiedBadge}.svg`}
+                        alt="Verified" 
+                        width={20} 
+                        height={20} 
+                        className="inline-block"
+                      />
+                    )}
+                  </div>  
+                  <span className="text-lg text-gray-600 dark:text-gray-400 transition-colors duration-200">
+                    @{formData.username || 'username'}
+                  </span>
+                  <p className="text-xl text-gray-900 dark:text-white mt-5 transition-colors duration-200">
+                    {formData.text || 'Your tweet text will appear here'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
